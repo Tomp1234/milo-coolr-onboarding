@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet Milo — Coolr Onboarding</title>
+<style>
+  :root {
+    --navy:    #0B0F1E;
+    --blue:    #4B7BFF;
+    --light:   #F0F4FF;
+    --softblue:#D6E4FF;
+    --grey:    #8892A4;
+    --midgrey: #445077;
+    --white:   #FFFFFF;
+    --purple:  #7B5FFF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: #F2F5FF;
+    color: var(--navy);
+    line-height: 1.6;
+  }
+
+  /* ─── NAV ──────────────────────────────────────── */
+  .topnav {
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px; height: 52px;
+    position: sticky; top: 0; z-index: 200;
+  }
+  .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo {
+    width: 30px; height: 30px; border-radius: 50%; background: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 13px; color: #fff; flex-shrink: 0;
+  }
+  .nav-name { font-weight: 700; font-size: 15px; color: #fff; }
+  .nav-meta { font-size: 12px; color: var(--softblue); }
+  .nav-link {
+    font-size: 13px; color: var(--softblue); text-decoration: none;
+    padding: 6px 14px; border: 1px solid rgba(75,123,255,0.3); border-radius: 20px;
+    transition: all .2s;
+  }
+  .nav-link:hover { background: rgba(75,123,255,0.15); color: #fff; }
+
+  /* ─── PROGRESS BAR ─────────────────────────────── */
+  .progress-bar {
+    position: fixed; top: 52px; left: 0; height: 2px;
+    background: var(--blue); width: 0%; z-index: 199;
+    transition: width .08s linear;
+  }
+
+  /* ─── PAGE LAYOUT ───────────────────────────────── */
+  .outer {
+    max-width: 1120px; margin: 0 auto;
+    padding: 0 24px 80px;
+    display: flex; align-items: flex-start; gap: 40px;
+  }
+  .main { flex: 1; min-width: 0; }
+
+  /* ─── TOC SIDEBAR ───────────────────────────────── */
+  .toc {
+    width: 180px; flex-shrink: 0;
+    position: sticky; top: 72px;
+    padding-top: 40px;
+    display: none;
+  }
+  @media (min-width: 1020px) { .toc { display: block; } }
+
+  .toc-title {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .12em; color: var(--grey); margin-bottom: 10px;
+  }
+  .toc a {
+    display: block; font-size: 12px; color: var(--midgrey);
+    text-decoration: none; padding: 5px 0 5px 12px;
+    border-left: 2px solid transparent; line-height: 1.4;
+    transition: color .15s, border-color .15s;
+  }
+  .toc a:hover { color: var(--blue); }
+  .toc a.active { color: var(--blue); border-left-color: var(--blue); font-weight: 600; }
+
+  /* ─── COVER ─────────────────────────────────────── */
+  .cover {
+    background: var(--navy);
+    border-radius: 16px;
+    padding: 64px 52px 52px;
+    margin-top: 32px;
+    margin-bottom: 56px;
+    position: relative; overflow: hidden;
+    border-bottom: 3px solid var(--blue);
+  }
+  .cover-glow {
+    position: absolute; top: -80px; right: -80px;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(75,123,255,0.18) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .cover-kicker {
+    font-size: 10px; font-weight: 700; letter-spacing: .15em;
+    text-transform: uppercase; color: var(--softblue); margin-bottom: 22px;
+  }
+  .cover-title {
+    font-size: clamp(34px, 5vw, 52px); font-weight: 800; color: #fff;
+    line-height: 1.1; margin-bottom: 14px;
+  }
+  .cover-title em { font-style: normal; color: var(--blue); }
+  .cover-sub {
+    font-size: 14px; color: var(--softblue); font-weight: 500; margin-bottom: 28px;
+  }
+  .cover-body {
+    font-size: 14px; color: rgba(240,244,255,0.78); line-height: 1.75;
+    max-width: 520px; margin-bottom: 32px;
+  }
+  .cover-quote {
+    border-left: 3px solid var(--blue);
+    background: rgba(75,123,255,0.1);
+    padding: 16px 20px; border-radius: 0 10px 10px 0;
+  }
+  .cover-quote p {
+    font-style: italic; font-size: 14px; color: var(--softblue);
+    line-height: 1.7; margin-bottom: 8px;
+  }
+  .cover-quote cite { font-size: 11px; color: var(--grey); font-style: normal; }
+
+  /* ─── SECTIONS ──────────────────────────────────── */
+  .section { margin-bottom: 60px; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; letter-spacing: .15em;
+    text-transform: uppercase; color: var(--blue); margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 24px; font-weight: 800; color: var(--navy);
+    line-height: 1.2; margin-bottom: 6px;
+  }
+  .section-source {
+    font-size: 13px; font-weight: 400; color: var(--grey); display: block;
+  }
+  .section-rule { height: 1px; background: var(--softblue); margin: 16px 0 20px; }
+  .section-intro { font-size: 14px; color: var(--midgrey); line-height: 1.7; margin-bottom: 24px; }
+
+  /* ─── FACT TABLE ────────────────────────────────── */
+  .fact-table {
+    border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--softblue); margin-bottom: 24px;
+  }
+  .fact-row { display: flex; border-bottom: 1px solid var(--softblue); }
+  .fact-row:last-child { border-bottom: none; }
+  .fact-label {
+    width: 154px; min-width: 154px; flex-shrink: 0;
+    background: #E0ECFF; padding: 14px 16px;
+    font-size: 11px; font-weight: 700; color: var(--blue); line-height: 1.4;
+  }
+  .fact-value {
+    flex: 1; background: var(--light); padding: 14px 16px;
+    font-size: 13px; color: var(--navy); line-height: 1.6;
+  }
+  @media (max-width: 480px) {
+    .fact-row { flex-direction: column; }
+    .fact-label { width: 100%; }
+  }
+
+  /* ─── PULL QUOTE ────────────────────────────────── */
+  .pull-quote {
+    border-left: 3px solid var(--blue); background: var(--light);
+    padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 6px;
+  }
+  .pull-quote p { font-style: italic; font-size: 14px; color: var(--navy); line-height: 1.65; }
+  .pull-attr { font-size: 11px; color: var(--grey); padding-left: 4px; margin-bottom: 0; }
+
+  /* ─── QUESTION CARDS ────────────────────────────── */
+  .question-grid { display: flex; flex-direction: column; gap: 8px; }
+  .question-card {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: #fff; border: 1px solid var(--softblue);
+    border-radius: 10px; padding: 14px 16px;
+    transition: box-shadow .2s, border-color .2s;
+  }
+  .question-card:hover {
+    box-shadow: 0 4px 18px rgba(75,123,255,0.10);
+    border-color: rgba(75,123,255,0.35);
+  }
+  .question-num {
+    width: 26px; height: 26px; border-radius: 6px;
+    background: var(--blue); color: #fff;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .question-content { flex: 1; }
+  .question-text { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 4px; line-height: 1.45; }
+  .question-hint { font-size: 11px; color: var(--grey); line-height: 1.5; }
+
+  /* ─── TIP CARDS ─────────────────────────────────── */
+  .tip-grid { display: flex; flex-direction: column; gap: 10px; }
+  .tip-card {
+    display: flex; align-items: flex-start; gap: 14px;
+    background: #fff; border: 1px solid var(--softblue);
+    border-radius: 10px; padding: 18px 20px;
+  }
+  .tip-icon {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: var(--light); color: var(--blue);
+    font-size: 14px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .tip-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 5px; }
+  .tip-body  { font-size: 12px; color: var(--midgrey); line-height: 1.6; }
+
+  .note-box {
+    background: #EBF1FF; border-bottom: 2px solid var(--blue);
+    border-radius: 8px; padding: 14px 18px; margin-top: 16px;
+    font-size: 13px; color: var(--navy); line-height: 1.6;
+  }
+
+  /* ─── NOT SECTION ───────────────────────────────── */
+  .not-list { display: flex; flex-direction: column; gap: 18px; margin-bottom: 28px; }
+  .not-item { display: flex; gap: 16px; align-items: flex-start; }
+  .not-dash {
+    font-size: 22px; font-weight: 900; color: var(--blue);
+    line-height: 1.1; flex-shrink: 0;
+  }
+  .not-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .not-body  { font-size: 12px; color: var(--grey); line-height: 1.65; }
+
+  .callout-box {
+    background: var(--navy); border-radius: 10px;
+    padding: 22px 26px; text-align: center;
+  }
+  .callout-box p {
+    font-style: italic; font-size: 14px; color: rgba(240,244,255,0.9); line-height: 1.65;
+  }
+
+  /* ─── CONTACT CARDS ─────────────────────────────── */
+  .contact-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 14px; margin-bottom: 28px;
+  }
+  @media (max-width: 540px) { .contact-grid { grid-template-columns: 1fr; } }
+  .contact-card {
+    background: var(--navy); border-radius: 12px;
+    padding: 22px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .contact-top { display: flex; align-items: center; gap: 12px; }
+  .contact-avatar {
+    width: 42px; height: 42px; border-radius: 10px;
+    background: var(--blue); color: #fff;
+    font-size: 17px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .contact-name { font-size: 14px; font-weight: 700; color: #fff; }
+  .contact-role { font-size: 11px; color: var(--softblue); margin-top: 2px; }
+  .contact-desc { font-size: 12px; color: rgba(240,244,255,0.68); line-height: 1.6; }
+  .contact-email {
+    display: inline-block; font-size: 12px; font-weight: 600;
+    color: var(--blue); text-decoration: none;
+    border: 1px solid rgba(75,123,255,0.35); border-radius: 6px;
+    padding: 6px 12px; width: fit-content;
+    transition: background .2s;
+  }
+  .contact-email:hover { background: rgba(75,123,255,0.15); }
+
+  /* ─── NEXT STEPS ────────────────────────────────── */
+  .next-steps-title { font-size: 13px; font-weight: 700; color: var(--blue); margin-bottom: 8px; }
+  .next-steps p { font-size: 13px; color: var(--navy); line-height: 1.7; }
+
+  /* ─── FOOTER ────────────────────────────────────── */
+  .doc-footer {
+    text-align: center; padding: 24px 0;
+    border-top: 1px solid var(--softblue);
+    font-size: 12px; color: var(--grey); line-height: 1.8;
+  }
+</style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div class="progress-bar" id="progress"></div>
+
+<!-- Nav -->
+<nav class="topnav">
+  <a class="nav-brand" href="#">
+    <div class="nav-logo">M</div>
+    <span class="nav-name">Milo</span>
+  </a>
+  <span class="nav-meta">Coolr Onboarding · March 2026</span>
+  <a class="nav-link" href="prompts.html">Prompt Library →</a>
+</nav>
+
+<!-- Two-column layout: main content + sidebar TOC -->
+<div class="outer">
+
+  <!-- ── MAIN CONTENT ── -->
+  <div class="main">
+
+    <!-- COVER -->
+    <div class="cover">
+      <div class="cover-glow"></div>
+      <div class="cover-kicker">Confidential · Coolr · March 2026</div>
+      <div class="cover-title">Meet <em>Milo</em>,<br>your new data<br>team member.</div>
+      <div class="cover-sub">Onboarding Pack · Welcome Edition</div>
+      <div class="cover-body">
+        Milo connects to HubSpot, Productive, Hibob, Teamtailor and Xero — so you can ask any business question in plain English and get a clear, confident answer. No dashboards. No SQL. No waiting for the data team.
+      </div>
+      <div class="cover-quote">
+        <p>"Like having a data engineering team. I used to have a bloke who was proper geeky and did all this stuff for me. So this is like having that but better."</p>
+        <cite>Alex, COO, Coolr</cite>
+      </div>
+    </div>
+
+    <!-- 01 INTRODUCTION -->
+    <div class="section" id="intro">
+      <div class="section-label">01 / Introduction</div>
+      <div class="section-title">Welcome to the team, Milo.</div>
+      <div class="section-rule"></div>
+      <p class="section-intro">
+        Milo isn't a dashboard. It isn't a reporting tool. And it definitely isn't another piece of software you have to maintain. Milo is your new data team member — always available, never on holiday, and already connected to every system that matters at Coolr.
+      </p>
+      <div class="fact-table">
+        <div class="fact-row">
+          <div class="fact-label">What Milo does</div>
+          <div class="fact-value">Answers business questions in plain English — revenue, people, pipeline, utilisation — clearly and instantly.</div>
+        </div>
+        <div class="fact-row">
+          <div class="fact-label">What it connects to</div>
+          <div class="fact-value">HubSpot · Productive · Hibob · Teamtailor · Xero</div>
+        </div>
+        <div class="fact-row">
+          <div class="fact-label">What changes today</div>
+          <div class="fact-value">You no longer need to chase spreadsheets, wait for reports, or pull data manually before a board meeting.</div>
+        </div>
+      </div>
+      <div class="pull-quote">
+        <p>"Our systems don't talk to each other. HubSpot, Productive, Hibob, Xero — they're all completely siloed. Milo fixes that."</p>
+      </div>
+      <p class="pull-attr" style="margin-top:6px">Alex, COO — from the discovery call</p>
+    </div>
+
+    <!-- 02 FINANCE -->
+    <div class="section" id="finance">
+      <div class="section-label">02 / What Milo Can Answer</div>
+      <div class="section-title">
+        Finance questions
+        <span class="section-source">Powered by Xero</span>
+      </div>
+      <div class="section-rule"></div>
+      <p class="section-intro">These are the questions a CFO or COO would ask on a Monday morning. Milo can answer all of them — right now, from day one.</p>
+      <div class="question-grid">
+        <div class="question-card">
+          <div class="question-num">1</div>
+          <div class="question-content">
+            <div class="question-text">What was our revenue last month vs budget, and are we on track for the year?</div>
+            <div class="question-hint">Pulls actuals vs budget from Xero and projects full-year trajectory.</div>
+          </div>
+        </div>
+        <div class="question-card">
+          <div class="question-num">2</div>
+          <div class="question-content">
+            <div class="question-text">What's our current EBITDA, and how has it trended over the last six months?</div>
+            <div class="question-hint">Month-by-month EBITDA with commentary on what's driving movement.</div>
+          </div>
+        </div>
+        <div class="question-card">
+          <div class="question-num">3</div>
+          <div class="question-content">
+            <div class="question-text">How much cash do we have right now, and how many months of runway is that?</div>
+            <div class="question-hint">Live cash position from Xero with burn rate context.</div>
+          </div>
+        </div>
+        <div class="question-card">
+          <div class="question-num">4</div>
+          <div class="question-content">
+            <div class="question-text">What's our net revenue per head this month vs last quarter?</div>
+            <div class="question-hint">Revenue divided by current headcount — a key efficiency metric for the board.</div>
+          </div>
+        </div>
+        <div class="question-card">
+          <div class="question-num">5</div>
+          <div class="question-content">
+            <div class="question-text">How are we tracking against YTD and full-year revenue targets?</div>
+            <div class="question-hint">Month-by-month actuals, YTD total, and year-end forecast in one answer.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 PEOPLE -->
+    <div class="section" id="people">
+      <div class="section-label">02 / What Milo Can Answer</div>
+      <div class="section-title">
+        People questions
+        <span class="section-source">Powered by Hibob + Teamtailor</span>
+      </div>
+      <div class="section-rule"></div>
+      <p class="section-intro">Before a board meeting or a senior leadership review, Milo can answer the people questions that usually take a full afternoon to pull together.</p>
+      <div class="question-grid">
+        <div class="question-card">
+          <div class="question-num" style="background:var(--purple)">1</div>
+          <div class="question-content">
+            <div class="question-text">What's our current headcount by department, and how has it changed this quarter?</div>
+            <div class="question-hint">Live headcount from Hibob, broken down by team, with quarter-on-quarter movement.</div>
+          </div>
+        </div>
+        <div class="question-card">
+          <div class="question-num" style="background:var(--purple)">2</div>
+          <div class="question-content">
+            <div class="question-text">What's our staff turnover rate this year, and which teams are most affected?</div>
+            <div class="question-hint">Leavers as a percentage of average headcount, flagging any hotspots.</div>
+          </div>
+        </div>
+        <div class="question-card">
+          <div class="question-num" style="background:var(--purple)">3</div>
+          <div class="question-content">
+            <div class="question-text">How does our absence rate compare to last year, and are there any patterns by team?</div>
+            <div class="question-hint">Absence data from Hibob with trend analysis and team-level breakdown.</div>
+          </div>
+        </div>
+        <div class="question-card">
+          <div class="question-num" style="background:var(--purple)">4</div>
+          <div class="question-content">
+            <div class="question-text">What percentage of new hires from the last 12 months are still with us?</div>
+            <div class="question-hint">Retention of recent joiners — a key leading indicator of culture and onboarding quality.</div>
+          </div>
+        </div>
+        <div class="question-card">
+          <div class="question-num" style="background:var(--purple)">5</div>
+          <div class="question-content">
+            <div class="question-text">What's our average time to fill open roles, and which departments are slowest?</div>
+            <div class="question-hint">Time-to-fill from Teamtailor, by department, with historical comparison.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 HOW TO ASK -->
+    <div class="section" id="how-to">
+      <div class="section-label">03 / Getting the Best from Milo</div>
+      <div class="section-title">How to ask Milo a question.</div>
+      <div class="section-rule"></div>
+      <p class="section-intro">Milo understands plain English, so there's no special syntax. But a little specificity goes a long way. Here's how to get the sharpest answers.</p>
+      <div class="tip-grid">
+        <div class="tip-card">
+          <div class="tip-icon">1.</div>
+          <div>
+            <div class="tip-title">Be specific with time and scope</div>
+            <div class="tip-body">"What was our revenue last month vs budget?" gets a sharper answer than "how are we doing?". The more context you give, the more precise Milo's answer.</div>
+          </div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">2.</div>
+          <div>
+            <div class="tip-title">Add a dimension if you want a breakdown</div>
+            <div class="tip-body">Drop in "by department", "by client" or "by team" to slice the data however you need it. Milo will restructure the answer accordingly.</div>
+          </div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">3.</div>
+          <div>
+            <div class="tip-title">Ask 'why' when something looks off</div>
+            <div class="tip-body">If the numbers surprise you, just ask. "Why did utilisation drop in February?" — Milo will dig into the data and give you an explanation, not just a number.</div>
+          </div>
+        </div>
+      </div>
+      <div class="note-box">
+        <strong>A note on precision:</strong> Milo will always tell you when it's confident and when it's making an inference. If it's not sure, it'll say so — and suggest how to refine the question.
+      </div>
+    </div>
+
+    <!-- 04 WHAT MILO IS NOT -->
+    <div class="section" id="not">
+      <div class="section-label">04 / Setting Expectations</div>
+      <div class="section-title">What Milo is not.</div>
+      <div class="section-rule"></div>
+      <p class="section-intro">Milo is a powerful tool — but it's worth being clear about what it's designed to do and where the edges are. No surprises.</p>
+      <div class="not-list">
+        <div class="not-item">
+          <div class="not-dash">—</div>
+          <div>
+            <div class="not-title">Not a replacement for your finance team's judgment</div>
+            <div class="not-body">Milo surfaces data and explains what it means. Your CFO still owns the narrative, the strategy, and the calls that numbers alone can't make.</div>
+          </div>
+        </div>
+        <div class="not-item">
+          <div class="not-dash">—</div>
+          <div>
+            <div class="not-title">Not a dashboard builder</div>
+            <div class="not-body">Milo answers questions — it doesn't build static reports or visualisations. Think of it as a brilliant analyst you can query any time, not a BI tool you have to configure.</div>
+          </div>
+        </div>
+        <div class="not-item">
+          <div class="not-dash">—</div>
+          <div>
+            <div class="not-title">Not connected to data outside the five sources — yet</div>
+            <div class="not-body">Right now, Milo works with HubSpot, Productive, Hibob, Teamtailor and Xero. If you need data from another system in future, we'll scope that as part of the next phase.</div>
+          </div>
+        </div>
+      </div>
+      <div class="callout-box">
+        <p>Milo is built to grow with you. The POC is the beginning — not the ceiling. As Coolr's needs evolve, so does Milo.</p>
+      </div>
+    </div>
+
+    <!-- 05 YOUR MILO TEAM -->
+    <div class="section" id="team">
+      <div class="section-label">05 / Your Milo Team</div>
+      <div class="section-title">Who to talk to.</div>
+      <div class="section-rule"></div>
+      <p class="section-intro">Two people have you covered from day one. For anything day-to-day, Tom is your first port of call. For technical queries about data connections, Philip is your go-to.</p>
+      <div class="contact-grid">
+        <div class="contact-card">
+          <div class="contact-top">
+            <div class="contact-avatar">T</div>
+            <div>
+              <div class="contact-name">Tom Pickett</div>
+              <div class="contact-role">Head of GTM</div>
+            </div>
+          </div>
+          <div class="contact-desc">Day-to-day contact for questions, onboarding support, and anything Milo-related.</div>
+          <a class="contact-email" href="mailto:tom@usemilo.ai">tom@usemilo.ai</a>
+        </div>
+        <div class="contact-card">
+          <div class="contact-top">
+            <div class="contact-avatar">P</div>
+            <div>
+              <div class="contact-name">Philip</div>
+              <div class="contact-role">Technical Lead</div>
+            </div>
+          </div>
+          <div class="contact-desc">Data connections, integrations, and anything under the hood. If something looks wrong in the data, Philip's your person.</div>
+          <a class="contact-email" href="mailto:philip@usemilo.ai">philip@usemilo.ai</a>
+        </div>
+      </div>
+      <div class="next-steps-title">What happens after this session?</div>
+      <p class="next-steps p" style="font-size:13px;color:var(--navy);line-height:1.7">
+        The Milo interface is live and connected to your five data sources from today. Tom will be in touch within 48 hours to check in, answer any early questions, and make sure the team feels confident. There's no onboarding cliff-edge — we're with you for the full POC.
+      </p>
+    </div>
+
+    <div class="doc-footer">
+      <strong>Welcome to the team, Milo.</strong><br>
+      usemilo.ai · hello@usemilo.ai · Confidential — Coolr, March 2026
+    </div>
+
+  </div><!-- /main -->
+
+  <!-- ── TOC SIDEBAR ── -->
+  <aside class="toc">
+    <div class="toc-title">On this page</div>
+    <a href="#intro">Introduction</a>
+    <a href="#finance">Finance Questions</a>
+    <a href="#people">People Questions</a>
+    <a href="#how-to">How to Ask</a>
+    <a href="#not">What Milo Is Not</a>
+    <a href="#team">Your Milo Team</a>
+  </aside>
+
+</div><!-- /outer -->
+
+<script>
+  // Scroll progress
+  window.addEventListener('scroll', () => {
+    const d = document.documentElement;
+    const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+    document.getElementById('progress').style.width = pct + '%';
+  });
+
+  // TOC active highlighting
+  const sections = document.querySelectorAll('.section[id]');
+  const tocLinks = document.querySelectorAll('.toc a');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        tocLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      }
+    });
+  }, { rootMargin: '-15% 0px -65% 0px' });
+  sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
