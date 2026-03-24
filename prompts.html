@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Milo Prompt Library — Coolr</title>
+<style>
+  :root {
+    --navy:    #0B0F1E;
+    --blue:    #4B7BFF;
+    --light:   #F0F4FF;
+    --softblue:#D6E4FF;
+    --grey:    #8892A4;
+    --midgrey: #445077;
+    --white:   #FFFFFF;
+    --purple:  #7B5FFF;
+    --green:   #1CAB78;
+    --gold:    #F5A623;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Helvetica, Arial, sans-serif;
+    background: #F4F7FF;
+    color: var(--navy);
+    line-height: 1.6;
+  }
+
+  /* ── NAV ── */
+  .topnav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 52px;
+  }
+  .topnav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .topnav-logo {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--blue); display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 14px; color: #fff;
+  }
+  .topnav-name { font-weight: 700; font-size: 16px; color: #fff; }
+  .topnav-meta { font-size: 12px; color: var(--softblue); }
+  .topnav-links a {
+    color: var(--softblue); font-size: 13px; text-decoration: none;
+    transition: color .2s;
+  }
+  .topnav-links a:hover { color: #fff; }
+
+  /* ── LAYOUT ── */
+  .page-wrapper { max-width: 820px; margin: 0 auto; padding: 0 20px 80px; }
+
+  /* ── HERO STRIP ── */
+  .hero {
+    background: var(--navy); border-radius: 0 0 16px 16px;
+    padding: 44px 48px 40px; margin-bottom: 40px;
+    border-bottom: 3px solid var(--blue);
+  }
+  .hero-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--softblue); margin-bottom: 12px;
+  }
+  .hero-title {
+    font-size: clamp(22px, 4vw, 32px); font-weight: 800; color: #fff;
+    line-height: 1.2; margin-bottom: 14px;
+  }
+  .hero-title span { color: var(--blue); }
+  .hero-body { font-size: 13px; color: rgba(240,244,255,0.75); line-height: 1.7; max-width: 540px; }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 28px; }
+  .section-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
+  }
+  .section-badge {
+    padding: 4px 12px; border-radius: 6px;
+    font-size: 11px; font-weight: 700; color: #fff;
+    white-space: nowrap;
+  }
+  .section-title-text {
+    font-size: 17px; font-weight: 800; color: var(--navy); flex: 1;
+  }
+  .source-tag {
+    font-size: 11px; color: var(--grey); white-space: nowrap;
+    background: var(--light); border: 1px solid var(--softblue);
+    padding: 3px 10px; border-radius: 20px;
+  }
+
+  /* ── QUESTION LIST ── */
+  .question-list { border-radius: 10px; overflow: hidden; border: 1px solid var(--softblue); }
+  .question-item {
+    display: flex; align-items: flex-start; gap: 0;
+    border-bottom: 1px solid var(--softblue);
+    transition: background .15s;
+  }
+  .question-item:last-child { border-bottom: none; }
+  .question-item:nth-child(odd)  { background: var(--light); }
+  .question-item:nth-child(even) { background: #fff; }
+  .question-item:hover { background: #E4EEFF; }
+  .question-arrow {
+    padding: 12px 8px 12px 14px;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+  .question-text {
+    flex: 1; padding: 12px 16px 12px 4px;
+    font-size: 13px; color: var(--navy); line-height: 1.5;
+    cursor: pointer;
+  }
+  .copy-btn {
+    padding: 12px 14px; color: var(--grey); font-size: 12px;
+    cursor: pointer; border: none; background: none;
+    opacity: 0; transition: opacity .2s;
+    flex-shrink: 0; align-self: center;
+  }
+  .question-item:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { color: var(--blue); }
+  .copy-btn.copied { color: var(--green); opacity: 1; }
+
+  /* ── CROSS-SYSTEM ── */
+  .cross-section {
+    background: var(--navy); border-radius: 12px;
+    padding: 28px 28px 24px; margin-top: 36px;
+    border-left: 4px solid var(--blue);
+  }
+  .cross-title {
+    font-size: 17px; font-weight: 800; color: #fff;
+    line-height: 1.25; margin-bottom: 6px;
+  }
+  .cross-sub { font-size: 12px; color: var(--softblue); margin-bottom: 20px; }
+  .cross-intro { font-size: 13px; color: rgba(240,244,255,0.75); margin-bottom: 20px; line-height: 1.6; }
+  .cross-list { display: flex; flex-direction: column; gap: 12px; }
+  .cross-item {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(75,123,255,0.2);
+    border-radius: 8px; padding: 14px 16px;
+    display: flex; align-items: flex-start; gap: 10px;
+    transition: background .15s;
+  }
+  .cross-item:hover { background: rgba(75,123,255,0.1); }
+  .cross-arrow { color: var(--blue); font-weight: 700; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+  .cross-content { flex: 1; }
+  .cross-q { font-size: 13px; font-weight: 600; color: #fff; line-height: 1.5; margin-bottom: 4px; }
+  .cross-tag {
+    font-size: 11px; color: var(--softblue);
+    background: rgba(75,123,255,0.15); border-radius: 4px;
+    padding: 2px 8px; display: inline-block;
+  }
+  .cross-copy {
+    background: none; border: none; color: var(--grey);
+    font-size: 12px; cursor: pointer; padding: 4px 6px;
+    border-radius: 4px; transition: all .2s; flex-shrink: 0;
+  }
+  .cross-copy:hover { color: var(--softblue); background: rgba(255,255,255,0.05); }
+  .cross-copy.copied { color: var(--green); }
+
+  /* ── FOOTER ── */
+  .doc-footer {
+    text-align: center; padding: 24px 0; margin-top: 24px;
+    border-top: 1px solid var(--softblue);
+    font-size: 12px; color: var(--grey);
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--navy); color: #fff; font-size: 13px;
+    padding: 10px 20px; border-radius: 8px;
+    transition: transform .3s ease; pointer-events: none;
+    border: 1px solid var(--blue); z-index: 999;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── PRINT ── */
+  @media print {
+    body { background: #fff; }
+    .topnav, .copy-btn, .cross-copy, .toast { display: none !important; }
+    .hero { border-radius: 0; }
+    .section { break-inside: avoid; }
+    .cross-section { break-inside: avoid; }
+  }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 28px; align-items: center;
+  }
+  .filter-bar span { font-size: 12px; color: var(--grey); margin-right: 4px; }
+  .filter-btn {
+    padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--softblue);
+    background: #fff; font-size: 12px; color: var(--midgrey);
+    cursor: pointer; transition: all .2s; font-weight: 500;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--blue); color: #fff; border-color: var(--blue);
+  }
+  .search-box {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 8px;
+    background: #fff; border: 1.5px solid var(--softblue);
+    border-radius: 20px; padding: 5px 14px;
+  }
+  .search-box input {
+    border: none; outline: none; font-size: 13px;
+    color: var(--navy); background: transparent; width: 180px;
+  }
+  .search-box input::placeholder { color: var(--grey); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="topnav-brand" href="#">
+    <div class="topnav-logo">M</div>
+    <span class="topnav-name">Milo</span>
+  </a>
+  <span class="topnav-meta">Prompt Library · Coolr · March 2026</span>
+  <div class="topnav-links">
+    <a href="welcome.html">← Welcome Doc</a>
+  </div>
+</nav>
+
+<div class="page-wrapper">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-label">Coolr · Milo Reference Card</div>
+    <div class="hero-title">Questions to ask your<br><span>new data team member</span></div>
+    <div class="hero-body">Type any of these into Milo exactly as written. They're designed to give you sharp, specific answers from your connected data — no setup, no SQL, no waiting. Click any question to copy it.</div>
+  </div>
+
+  <!-- FILTER + SEARCH -->
+  <div class="filter-bar">
+    <span>Filter:</span>
+    <button class="filter-btn active" onclick="filterSection('all', this)">All</button>
+    <button class="filter-btn" onclick="filterSection('finance', this)">Finance</button>
+    <button class="filter-btn" onclick="filterSection('people', this)">People & HR</button>
+    <button class="filter-btn" onclick="filterSection('growth', this)">New Business</button>
+    <button class="filter-btn" onclick="filterSection('delivery', this)">Delivery</button>
+    <div class="search-box">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8892A4" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search questions…" oninput="searchQuestions(this.value)">
+    </div>
+  </div>
+
+  <!-- FINANCE -->
+  <div class="section" data-section="finance">
+    <div class="section-header">
+      <div class="section-badge" style="background:var(--blue)">Finance</div>
+      <div class="section-title-text">Finance</div>
+      <div class="source-tag">Powered by Xero</div>
+    </div>
+    <div class="question-list">
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--blue)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">What was our revenue last month vs budget — are we ahead or behind?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--blue)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">What's our current EBITDA, and how has it moved over the last six months?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--blue)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">How much cash do we have right now, and how many months of runway does that give us?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--blue)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">What's our net revenue per head this month, and how does that compare to last quarter?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--blue)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">How are we tracking against our full-year revenue target? Give me month-by-month actuals and a year-end forecast.</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--blue)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">What are the key finance KPIs I need to know for this week?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--blue)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">Are we on track to hit our covenant thresholds this quarter?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PEOPLE & HR -->
+  <div class="section" data-section="people">
+    <div class="section-header">
+      <div class="section-badge" style="background:var(--purple)">People & HR</div>
+      <div class="section-title-text">People & HR</div>
+      <div class="source-tag">Powered by Hibob + Teamtailor</div>
+    </div>
+    <div class="question-list">
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--purple)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">What's our current headcount by department, and how has it changed this quarter?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--purple)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">What's our staff turnover rate this year, and which teams have the highest churn?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--purple)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">How does our absence rate look this month compared to the same time last year?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--purple)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">What percentage of people who joined in the last 12 months are still with us?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--purple)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">What's our average time to fill open roles, and which departments are slowest?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--purple)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">How many open roles do we have right now, and where are they in the hiring process?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--purple)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">What does our appraisal completion rate look like — and who hasn't been reviewed yet?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW BUSINESS -->
+  <div class="section" data-section="growth">
+    <div class="section-header">
+      <div class="section-badge" style="background:var(--green)">New Business</div>
+      <div class="section-title-text">New Business / Growth</div>
+      <div class="source-tag">Powered by HubSpot</div>
+    </div>
+    <div class="question-list">
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--green)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">What's the total value of our current pipeline, and how does that compare to last month?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--green)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">How many new opportunities have we opened this month, and what's the source breakdown?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--green)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">What's our win rate on deals closed in the last quarter?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--green)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">What's our average deal size, and has it been growing or shrinking?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--green)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">Which deals are most at risk right now — show me anything that's been stalled for over 30 days.</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--green)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">What's our pipeline coverage ratio against this quarter's revenue target?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELIVERY -->
+  <div class="section" data-section="delivery">
+    <div class="section-header">
+      <div class="section-badge" style="background:var(--gold)">Delivery</div>
+      <div class="section-title-text">Delivery & Utilisation</div>
+      <div class="source-tag">Powered by Productive</div>
+    </div>
+    <div class="question-list">
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--gold)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">What's our staff utilisation by team this month — who's overloaded and who has capacity?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--gold)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">How many people haven't submitted their timesheets this week?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--gold)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">Which clients are we most over-servicing right now, and by how much?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--gold)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">What's our freelancer spend as a percentage of revenue this month?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--gold)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">How accurate has our project forecasting been over the last quarter?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+      <div class="question-item">
+        <div class="question-arrow" style="color:var(--gold)">▸</div>
+        <div class="question-text" onclick="copyQ(this)">Which projects are at risk of going over budget based on current burn rate?</div>
+        <button class="copy-btn" onclick="copyQ(this.previousElementSibling)" title="Copy">⎘</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CROSS-SYSTEM -->
+  <div class="cross-section">
+    <div class="cross-title">Cross-system questions Milo can answer</div>
+    <div class="cross-sub">that no single tool can</div>
+    <div class="cross-intro">These are the headline questions — the ones that weren't possible before Milo. Each one pulls from multiple sources at once.</div>
+    <div class="cross-list">
+      <div class="cross-item">
+        <div class="cross-arrow">▸</div>
+        <div class="cross-content">
+          <div class="cross-q">What's our net revenue per head this month, and how does it compare to last quarter?</div>
+          <div class="cross-tag">Xero (revenue) + Hibob (headcount) — the efficiency metric no single tool could give you</div>
+        </div>
+        <button class="cross-copy" onclick="crossCopy(this, &quot;What's our net revenue per head this month, and how does it compare to last quarter?&quot;)" title="Copy">⎘</button>
+      </div>
+      <div class="cross-item">
+        <div class="cross-arrow">▸</div>
+        <div class="cross-content">
+          <div class="cross-q">We've had three people leave the delivery team this quarter — what's the impact on utilisation and project capacity?</div>
+          <div class="cross-tag">Hibob (leavers) + Productive (utilisation, capacity) — connects people data to operational impact</div>
+        </div>
+        <button class="cross-copy" onclick="crossCopy(this, &quot;We've had three people leave the delivery team this quarter — what's the impact on utilisation and project capacity?&quot;)" title="Copy">⎘</button>
+      </div>
+      <div class="cross-item">
+        <div class="cross-arrow">▸</div>
+        <div class="cross-content">
+          <div class="cross-q">How much of our new business pipeline is in sectors where we're already over-serviced?</div>
+          <div class="cross-tag">HubSpot (pipeline by sector) + Productive (overservice by client/sector) — flags delivery risk before it becomes a problem</div>
+        </div>
+        <button class="cross-copy" onclick="crossCopy(this, &quot;How much of our new business pipeline is in sectors where we're already over-serviced?&quot;)" title="Copy">⎘</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    Day-to-day: <a href="mailto:tom@usemilo.ai" style="color:var(--blue)">tom@usemilo.ai</a> &nbsp;·&nbsp;
+    Technical: <a href="mailto:philip@usemilo.ai" style="color:var(--blue)">philip@usemilo.ai</a> &nbsp;·&nbsp;
+    usemilo.ai &nbsp;·&nbsp; Confidential — Coolr, March 2026
+  </div>
+
+</div>
+
+<div class="toast" id="toast">Copied to clipboard</div>
+
+<script>
+  function copyQ(el) {
+    const text = el.textContent.trim();
+    navigator.clipboard.writeText(text).then(() => {
+      showToast();
+      el.style.background = 'rgba(75,123,255,0.08)';
+      setTimeout(() => el.style.background = '', 600);
+    });
+  }
+
+  function crossCopy(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✓';
+      btn.classList.add('copied');
+      showToast();
+      setTimeout(() => { btn.textContent = '⎘'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function showToast() {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  function filterSection(key, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.section[data-section]').forEach(s => {
+      s.style.display = (key === 'all' || s.dataset.section === key) ? '' : 'none';
+    });
+  }
+
+  function searchQuestions(query) {
+    const q = query.toLowerCase();
+    document.querySelectorAll('.section[data-section]').forEach(sec => {
+      let anyVisible = false;
+      sec.querySelectorAll('.question-item').forEach(item => {
+        const txt = item.querySelector('.question-text').textContent.toLowerCase();
+        const show = !q || txt.includes(q);
+        item.style.display = show ? '' : 'none';
+        if (show) anyVisible = true;
+      });
+      sec.style.display = anyVisible ? '' : 'none';
+    });
+    // Reset filter btns
+    if (q) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    }
+  }
+</script>
+</body>
+</html>
