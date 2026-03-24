@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Milo × Coolr — Onboarding</title>
+<style>
+  :root {
+    --navy:    #0B0F1E;
+    --blue:    #4B7BFF;
+    --light:   #F0F4FF;
+    --softblue:#D6E4FF;
+    --grey:    #8892A4;
+    --midgrey: #445077;
+    --white:   #FFFFFF;
+    --purple:  #7B5FFF;
+    --green:   #1CAB78;
+    --gold:    #F5A623;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Helvetica, Arial, sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 40px 20px;
+  }
+
+  .logo-row {
+    display: flex; align-items: center; gap: 16px; margin-bottom: 12px;
+  }
+  .logo {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 800; color: #fff;
+  }
+  .logo-name { font-size: 28px; font-weight: 800; color: #fff; }
+  .logo-x { font-size: 20px; color: var(--grey); margin: 0 4px; }
+  .logo-client { font-size: 28px; font-weight: 800; color: var(--softblue); }
+
+  .kicker {
+    font-size: 11px; letter-spacing: .15em; text-transform: uppercase;
+    color: var(--grey); margin-bottom: 32px; text-align: center;
+  }
+
+  .hero-title {
+    font-size: clamp(28px, 6vw, 48px); font-weight: 800;
+    line-height: 1.15; text-align: center; margin-bottom: 16px;
+    max-width: 600px;
+  }
+  .hero-title span { color: var(--blue); }
+
+  .hero-sub {
+    font-size: 16px; color: rgba(240,244,255,0.65);
+    line-height: 1.7; text-align: center; max-width: 500px;
+    margin-bottom: 56px;
+  }
+
+  .card-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 20px; width: 100%; max-width: 700px;
+    margin-bottom: 48px;
+  }
+  @media (max-width: 560px) { .card-grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(75,123,255,0.25);
+    border-radius: 14px; padding: 28px;
+    text-decoration: none; color: inherit;
+    transition: all .25s; display: flex; flex-direction: column; gap: 12px;
+    position: relative; overflow: hidden;
+  }
+  .card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--blue); transform: scaleX(0); transform-origin: left;
+    transition: transform .3s;
+  }
+  .card:hover { background: rgba(75,123,255,0.08); border-color: rgba(75,123,255,0.5); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(75,123,255,0.15); }
+  .card:hover::before { transform: scaleX(1); }
+
+  .card-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .card-title { font-size: 18px; font-weight: 700; color: #fff; }
+  .card-desc { font-size: 13px; color: var(--grey); line-height: 1.6; flex: 1; }
+  .card-cta {
+    font-size: 13px; font-weight: 600; color: var(--blue);
+    display: flex; align-items: center; gap: 6px; margin-top: 4px;
+    transition: gap .2s;
+  }
+  .card:hover .card-cta { gap: 10px; }
+
+  .sources-row {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    justify-content: center; margin-bottom: 48px;
+  }
+  .source-pill {
+    font-size: 11px; font-weight: 500;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px; padding: 5px 14px; color: var(--softblue);
+  }
+  .sources-label { font-size: 11px; color: var(--grey); }
+
+  .footer-contacts {
+    display: flex; gap: 32px; flex-wrap: wrap; justify-content: center;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 28px; width: 100%; max-width: 700px;
+  }
+  .contact { text-align: center; }
+  .contact-name { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+  .contact-role { font-size: 11px; color: var(--grey); margin-bottom: 6px; }
+  .contact-email { font-size: 12px; color: var(--blue); text-decoration: none; }
+  .contact-email:hover { text-decoration: underline; }
+
+  .footer-note { font-size: 11px; color: var(--grey); margin-top: 24px; text-align: center; }
+</style>
+</head>
+<body>
+
+  <div class="logo-row">
+    <div class="logo">M</div>
+    <div class="logo-name">Milo</div>
+    <div class="logo-x">×</div>
+    <div class="logo-client">Coolr</div>
+  </div>
+  <div class="kicker">Onboarding Pack · March 2026 · Confidential</div>
+
+  <div class="hero-title">Your new<br><span>data team member</span><br>is here.</div>
+  <div class="hero-sub">
+    Milo connects to all five of Coolr's core systems and lets anyone ask questions in plain English. No SQL. No dashboards. No waiting.
+  </div>
+
+  <div class="sources-row">
+    <span class="sources-label">Connected to:</span>
+    <span class="source-pill">HubSpot</span>
+    <span class="source-pill">Productive</span>
+    <span class="source-pill">Hibob</span>
+    <span class="source-pill">Teamtailor</span>
+    <span class="source-pill">Xero</span>
+  </div>
+
+  <div class="card-grid">
+    <a class="card" href="welcome.html">
+      <div class="card-icon" style="background:rgba(75,123,255,0.15)">👋</div>
+      <div class="card-title">Welcome Doc</div>
+      <div class="card-desc">Introduction to Milo, example questions across finance and people, how to ask, and what to expect.</div>
+      <div class="card-cta">Read the welcome doc <span>→</span></div>
+    </a>
+    <a class="card" href="prompts.html">
+      <div class="card-icon" style="background:rgba(75,123,255,0.15)">💬</div>
+      <div class="card-title">Prompt Library</div>
+      <div class="card-desc">30+ ready-to-use questions across Finance, People, New Business, Delivery — and cross-system queries no single tool could answer before.</div>
+      <div class="card-cta">Open the prompt library <span>→</span></div>
+    </a>
+  </div>
+
+  <div class="footer-contacts">
+    <div class="contact">
+      <div class="contact-name">Tom Pickett</div>
+      <div class="contact-role">Head of GTM · Day-to-day</div>
+      <a class="contact-email" href="mailto:tom@usemilo.ai">tom@usemilo.ai</a>
+    </div>
+    <div class="contact">
+      <div class="contact-name">Philip</div>
+      <div class="contact-role">Technical Lead · Data connections</div>
+      <a class="contact-email" href="mailto:philip@usemilo.ai">philip@usemilo.ai</a>
+    </div>
+  </div>
+
+  <div class="footer-note">Confidential · For Coolr internal use only · usemilo.ai</div>
+
+</body>
+</html>
